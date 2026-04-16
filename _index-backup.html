@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BE Inteligência — A concept for Beach Enclave</title>
+<meta name="description" content="Making Beach Enclave ready for the group era. An AI-first operating layer." />
+<meta name="theme-color" content="#0F2830" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='24' fill='none' stroke='%234A7E92' stroke-width='1.5'/%3E%3Ctext x='16' y='21' font-family='Arial' font-size='11' font-weight='300' fill='%234A7E92' text-anchor='middle' letter-spacing='1'%3EBE%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400;1,9..144,500&display=swap" />
+
+<style>
+/* ========== DESIGN TOKENS ========== */
+:root {
+  /* Palette — bold version: deeper teal range + dramatic contrast */
+  --teal: #4A7E92;
+  --teal-dark: #2F5E70;
+  --teal-deep: #1A3E4C;
+  --teal-void: #0F2830;
+  --teal-bright: #6BA5B9;
+  --teal-wash: #E4EDF2;
+  --teal-mist: #F2F5F7;
+
+  --ink: #0F1922;
+  --graphite: #2B3842;
+  --slate: #5A6B77;
+  --fog: #96A5B0;
+  --mist: #D6DEE3;
+  --pearl: #FAFBFC;
+  --paper: #FFFFFF;
+  --ivory: #F5F1E8;
+
+  /* Typography */
+  --sans: 'Montserrat', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --serif: 'Fraunces', Georgia, serif;
+
+  /* Spacing */
+  --section-py: clamp(5rem, 11vw, 10rem);
+  --container-px: clamp(1.5rem, 5vw, 4rem);
+  --container-max: 1320px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--graphite);
+  background: var(--paper);
+  overflow-x: hidden;
+  font-feature-settings: "kern", "liga";
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; transition: color 200ms var(--ease); }
+::selection { background: var(--teal); color: white; }
+
+/* ========== REUSABLE ========== */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-left: var(--container-px);
+  padding-right: var(--container-px);
+}
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--teal);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow--light { color: var(--teal-bright); }
+.eyebrow::before {
+  content: "";
+  width: 32px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.h-display {
+  font-family: var(--sans);
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.h-display--light { color: white; }
+
+.thin-rule {
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: var(--teal);
+  margin: 2rem 0;
+}
+.thin-rule--center { margin-left: auto; margin-right: auto; }
+.thin-rule--light { background: rgba(255,255,255,0.4); }
+
+/* Outlined button — BE's actual convention */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  border: 1px solid var(--teal);
+  background: transparent;
+  color: var(--teal);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  transition: all 300ms var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--teal);
+  transform: translateY(101%);
+  transition: transform 400ms var(--ease);
+  z-index: -1;
+}
+.btn:hover { color: white; border-color: var(--teal); }
+.btn:hover::after { transform: translateY(0); }
+.btn--light {
+  border-color: white;
+  color: white;
+}
+.btn--light::after { background: white; }
+.btn--light:hover { color: var(--teal-deep); }
+
+.btn--filled {
+  background: var(--teal);
+  color: white;
+  border-color: var(--teal);
+}
+.btn--filled::after { background: var(--teal-dark); }
+.btn--filled:hover { color: white; }
+
+.plus-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.bordered-wordmark {
+  display: inline-block;
+  border: 1px solid currentColor;
+  padding: 2rem 3.5rem;
+  text-align: center;
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1;
+}
+.bordered-wordmark__be {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 0.12em;
+  display: block;
+}
+.bordered-wordmark__sub {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  letter-spacing: 0.15em;
+  display: block;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+}
+
+/* ========== REVEAL ANIMATIONS ========== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 900ms var(--ease), transform 900ms var(--ease);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal--delay-1 { transition-delay: 150ms; }
+.reveal--delay-2 { transition-delay: 300ms; }
+.reveal--delay-3 { transition-delay: 450ms; }
+.reveal--delay-4 { transition-delay: 600ms; }
+.reveal--delay-5 { transition-delay: 750ms; }
+
+/* Letter-stagger reveal for dramatic headlines */
+.split-reveal .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.5em);
+  transition: opacity 800ms var(--ease), transform 800ms var(--ease);
+}
+.split-reveal.is-visible .char {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== NAV ========== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1.25rem 0;
+  background: transparent;
+  transition: background 400ms var(--ease), padding 400ms var(--ease), backdrop-filter 400ms var(--ease);
+}
+.nav.is-scrolled {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.75rem 0;
+  box-shadow: 0 1px 0 rgba(15,40,48,0.08);
+}
+.nav__inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 2rem;
+}
+.nav__left, .nav__right { display: flex; align-items: center; gap: 1.5rem; }
+.nav__right { justify-content: flex-end; }
+.nav__menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: white;
+  cursor: pointer;
+  transition: color 300ms var(--ease);
+}
+.nav.is-scrolled .nav__menu { color: var(--ink); }
+.nav__menu__lines { display: inline-flex; flex-direction: column; gap: 3px; }
+.nav__menu__lines span {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: currentColor;
+}
+.nav__phone {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: white;
+  opacity: 0.9;
+  transition: color 300ms var(--ease);
+}
+.nav.is-scrolled .nav__phone { color: var(--graphite); }
+.nav__logo {
+  border: 1px solid white;
+  padding: 8px 14px;
+  text-align: center;
+  line-height: 1;
+  transition: border-color 300ms var(--ease), color 300ms var(--ease);
+  color: white;
+}
+.nav.is-scrolled .nav__logo { border-color: var(--teal); color: var(--teal); }
+.nav__logo__be { font-size: 14px; font-weight: 300; letter-spacing: 0.1em; display: block; }
+.nav__logo__sub { font-size: 8px; font-weight: 300; letter-spacing: 0.2em; display: block; margin-top: 2px; }
+.nav__cta {
+  padding: 10px 22px;
+  border: 1px solid white;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: all 300ms var(--ease);
+  cursor: pointer;
+}
+.nav.is-scrolled .nav__cta { border-color: var(--teal); color: var(--teal); }
+.nav__cta:hover { background: white; color: var(--teal-deep); }
+.nav.is-scrolled .nav__cta:hover { background: var(--teal); color: white; }
+.nav__divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255,255,255,0.3);
+  transition: background 300ms var(--ease);
+}
+.nav.is-scrolled .nav__divider { background: rgba(15,40,48,0.25); }
+
+@media (max-width: 900px) {
+  .nav__phone { display: none; }
+  .nav__divider { display: none; }
+  .nav__cta { display: none; }
+}
+
+/* ========== HERO ========== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  overflow: hidden;
+  background: var(--teal-void);
+}
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=2400&q=85&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center 40%;
+  will-change: transform;
+  transform: scale(1.08);
+  animation: slowZoom 20s ease-out forwards;
+}
+@keyframes slowZoom {
+  to { transform: scale(1); }
+}
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(15,40,48,0.55) 0%, rgba(15,40,48,0.35) 40%, rgba(15,40,48,0.7) 100%),
+    radial-gradient(ellipse at center, rgba(15,40,48,0) 0%, rgba(15,40,48,0.4) 100%);
+}
+.hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 1000px;
+  width: 100%;
+}
+.hero__eyebrow {
+  color: white;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeIn 1200ms var(--ease) 600ms forwards;
+}
+.hero__eyebrow::before { background: rgba(255,255,255,0.6); }
+.hero__wordmark {
+  display: inline-block;
+  color: white;
+  opacity: 0;
+  animation: fadeIn 1400ms var(--ease) 900ms forwards, borderDraw 1800ms var(--ease) 900ms forwards;
+  border-color: rgba(255,255,255,0);
+}
+@keyframes borderDraw {
+  to { border-color: rgba(255,255,255,0.9); }
+}
+.hero__wordmark__be {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  line-height: 1;
+}
+.hero__wordmark__sub {
+  font-size: clamp(1rem, 2.2vw, 1.75rem);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+  margin-top: 0.75rem;
+  opacity: 0.92;
+}
+@keyframes fadeIn { to { opacity: 1; } }
+.hero__tagline {
+  margin-top: 3rem;
+  font-size: clamp(1.125rem, 1.75vw, 1.5rem);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  opacity: 0;
+  animation: fadeIn 1400ms var(--ease) 1400ms forwards;
+}
+.hero__lede {
+  margin-top: 2rem;
+  font-size: 16px;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0;
+  color: rgba(255,255,255,0.85);
+  animation: fadeIn 1400ms var(--ease) 1700ms forwards;
+}
+.hero__scroll {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeIn 1400ms var(--ease) 2000ms forwards;
+  z-index: 2;
+}
+.hero__scroll::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 60px;
+  background: rgba(255,255,255,0.5);
+  margin: 16px auto 0;
+  animation: scrollLine 2.4s ease-in-out infinite;
+  transform-origin: top;
+}
+@keyframes scrollLine {
+  0%, 100% { transform: scaleY(1); opacity: 0.6; }
+  50% { transform: scaleY(0.4); opacity: 1; }
+}
+
+/* ========== MARQUEE ========== */
+.marquee {
+  background: var(--teal-void);
+  color: rgba(255,255,255,0.65);
+  padding: 1.25rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.marquee__track {
+  display: inline-flex;
+  animation: marquee 40s linear infinite;
+  gap: 3rem;
+  padding-right: 3rem;
+}
+.marquee__item {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 3rem;
+}
+.marquee__item::after {
+  content: "✦";
+  color: var(--teal-bright);
+  font-size: 10px;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ========== SECTION BASE ========== */
+.section {
+  padding: var(--section-py) 0;
+  position: relative;
+}
+.section--wash { background: var(--teal-mist); }
+.section--dark {
+  background: var(--teal-void);
+  color: rgba(255,255,255,0.85);
+}
+.section--dark .h-display { color: white; }
+.section__head {
+  max-width: 900px;
+  margin: 0 auto 4rem;
+  text-align: center;
+}
+.section__head .eyebrow { margin-bottom: 1.5rem; }
+.section__head h2 {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  margin-bottom: 1rem;
+}
+.section__lede {
+  max-width: 640px;
+  margin: 1.5rem auto 0;
+  font-size: 16px;
+  color: var(--slate);
+}
+.section--dark .section__lede { color: rgba(255,255,255,0.75); }
+
+/* ========== PROOF ========== */
+.proof {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: stretch;
+}
+.proof__maya {
+  background: var(--teal-void);
+  color: white;
+  padding: 3.5rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 480px;
+}
+.proof__maya__bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.25;
+  background-image: url('https://images.unsplash.com/photo-1518684079-3c830dcef090?w=1200&q=80&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+}
+.proof__maya__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--teal-void) 0%, rgba(15,40,48,0.85) 60%, rgba(15,40,48,0.4) 100%);
+}
+.proof__maya__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.proof__maya__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal-bright);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.proof__maya__name {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+}
+.proof__maya__body {
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.82);
+  max-width: 420px;
+}
+.proof__maya__dataflow {
+  margin-top: auto;
+  padding-top: 2.5rem;
+}
+
+.proof__quote {
+  padding: 3.5rem;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--mist);
+  position: relative;
+}
+.proof__quote__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.proof__quote__mark {
+  font-family: var(--serif);
+  font-size: 120px;
+  color: var(--teal);
+  line-height: 0.5;
+  margin-bottom: 1rem;
+  height: 50px;
+}
+.proof__quote__text {
+  font-family: var(--sans);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 300;
+  line-height: 1.35;
+  color: var(--ink);
+  margin-bottom: 2rem;
+  letter-spacing: -0.01em;
+}
+.proof__quote__attr {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  font-weight: 500;
+  color: var(--slate);
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .proof { grid-template-columns: 1fr; gap: 0; }
+  .proof__maya, .proof__quote { padding: 2.5rem; }
+}
+
+/* ========== THESIS ========== */
+.thesis {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background: var(--teal-void);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.thesis__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=2400&q=80&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.18;
+  filter: grayscale(100%);
+}
+.thesis__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 4rem 0;
+}
+.thesis__kicker {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal-bright);
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+.thesis__statement {
+  font-family: var(--sans);
+  font-weight: 200;
+  font-size: clamp(2.25rem, 6vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: white;
+  text-transform: uppercase;
+}
+.thesis__statement em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--teal-bright);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.thesis__para {
+  max-width: 720px;
+  margin: 3rem auto 2.5rem;
+  color: rgba(255,255,255,0.78);
+  font-size: 16px;
+  line-height: 1.8;
+}
+.thesis__outcomes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  margin-top: 3rem;
+}
+.thesis__outcome { display: inline-flex; align-items: center; gap: 0.75rem; }
+.thesis__outcome__dot {
+  width: 4px;
+  height: 4px;
+  background: var(--teal-bright);
+  border-radius: 50%;
+}
+
+/* ========== VISION ========== */
+.vision {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 5rem;
+  align-items: start;
+}
+.vision__left h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 2rem; }
+.vision__para {
+  font-size: 16px;
+  color: var(--graphite);
+  line-height: 1.85;
+  margin-bottom: 2.5rem;
+}
+.vision__brief {
+  background: var(--teal-void);
+  color: white;
+  padding: 2rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+}
+.vision__brief__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal-bright);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.vision__brief__label::before {
+  content: "+";
+  font-size: 14px;
+  font-weight: 300;
+}
+.vision__brief__text {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.55;
+  color: white;
+  letter-spacing: 0.01em;
+}
+.vision__outcomes {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.vision__outcome {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 1.5rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--mist);
+  transition: background 300ms var(--ease);
+}
+.vision__outcome:first-child { padding-top: 0; }
+.vision__outcome:last-child { border-bottom: none; }
+.vision__outcome__num {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  padding-top: 3px;
+}
+.vision__outcome__title {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.vision__outcome__desc {
+  font-size: 14px;
+  color: var(--slate);
+  line-height: 1.6;
+}
+.vision__outcome:hover { background: var(--teal-mist); padding-left: 1rem; padding-right: 1rem; }
+
+@media (max-width: 900px) {
+  .vision { grid-template-columns: 1fr; gap: 3rem; }
+}
+
+/* ========== ARCHITECTURE ========== */
+.arch {
+  text-align: center;
+}
+.arch__diagram {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+.arch__diagram svg { width: 100%; height: auto; }
+
+/* SVG path draw animation — dasharray must exceed the longest line (horizontal spine is 660) */
+.draw-path {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  transition: stroke-dashoffset 1600ms var(--ease);
+  transition-delay: 300ms;
+}
+.is-visible .draw-path { stroke-dashoffset: 0; }
+
+.arch__node {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 800ms var(--ease), transform 800ms var(--ease);
+}
+.is-visible .arch__node { opacity: 1; transform: translateY(0); }
+.is-visible .arch__node--1 { transition-delay: 100ms; }
+.is-visible .arch__node--2 { transition-delay: 500ms; }
+.is-visible .arch__node--3 { transition-delay: 900ms; }
+.is-visible .arch__node--4 { transition-delay: 1000ms; }
+.is-visible .arch__node--5 { transition-delay: 1100ms; }
+
+/* Orchestrator hub — outer nodes pulse in sequence, suggesting data flowing in */
+.hub-node {
+  animation: hubPulse 4s ease-in-out infinite;
+  transform-origin: center;
+}
+.hub-node--1 { animation-delay: 1.8s; }
+.hub-node--2 { animation-delay: 2.8s; }
+.hub-node--3 { animation-delay: 3.8s; }
+.hub-node--4 { animation-delay: 4.8s; }
+@keyframes hubPulse {
+  0%, 65%, 100% { fill-opacity: 0; }
+  20%, 45% { fill-opacity: 1; }
+}
+
+/* Mobile: let the diagram scroll horizontally rather than shrinking text to illegibility */
+@media (max-width: 760px) {
+  .arch__diagram {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1rem;
+  }
+  .arch__diagram svg {
+    min-width: 820px;
+    width: 820px;
+  }
+}
+
+.arch__data {
+  margin-top: 3rem;
+  padding: 1.5rem 2rem;
+  background: var(--teal-void);
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem 2rem;
+}
+.arch__data__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal-bright);
+  text-transform: uppercase;
+}
+.arch__data__items {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.05em;
+}
+
+/* ========== PILLARS ========== */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.pillar {
+  border: 1px solid var(--mist);
+  padding: 2.5rem;
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 400ms var(--ease), transform 400ms var(--ease);
+  cursor: pointer;
+}
+.pillar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--teal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms var(--ease);
+}
+.pillar:hover { border-color: var(--teal); transform: translateY(-4px); }
+.pillar:hover::before { transform: scaleX(1); }
+.pillar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.pillar__num {
+  font-size: 42px;
+  font-weight: 200;
+  color: var(--teal);
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+.pillar__icon {
+  width: 36px;
+  height: 36px;
+  color: var(--teal);
+}
+.pillar__title {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+.pillar__desc {
+  font-size: 14px;
+  color: var(--slate);
+  line-height: 1.75;
+}
+
+@media (max-width: 800px) {
+  .pillars { grid-template-columns: 1fr; }
+}
+
+/* ========== ROADMAP ========== */
+.roadmap { position: relative; }
+.roadmap__timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  position: relative;
+  padding-top: 4rem;
+}
+.roadmap__spine {
+  position: absolute;
+  top: 4rem;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: var(--mist);
+  overflow: hidden;
+}
+.roadmap__spine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--teal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1800ms var(--ease) 200ms;
+}
+.roadmap.is-visible .roadmap__spine::before { transform: scaleX(1); }
+
+.roadmap__phase { position: relative; padding-top: 3rem; }
+.roadmap__node {
+  position: absolute;
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--mist);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 400ms var(--ease), transform 400ms var(--ease);
+  opacity: 0;
+}
+.roadmap__node::before {
+  content: "+";
+  font-size: 18px;
+  color: var(--teal);
+  font-weight: 300;
+  line-height: 1;
+}
+.roadmap.is-visible .roadmap__node { opacity: 1; border-color: var(--teal); }
+.roadmap.is-visible .roadmap__node--1 { transition-delay: 400ms; }
+.roadmap.is-visible .roadmap__node--2 { transition-delay: 1000ms; }
+.roadmap.is-visible .roadmap__node--3 { transition-delay: 1700ms; }
+
+.roadmap__phase:hover .roadmap__node { transform: translateX(-50%) scale(1.15); background: var(--teal); border-color: var(--teal); }
+.roadmap__phase:hover .roadmap__node::before { color: white; }
+
+.roadmap__range {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+.roadmap__name {
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+.roadmap__focus {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--slate);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.roadmap__items {
+  list-style: none;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--mist);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.roadmap__item {
+  font-size: 13px;
+  color: var(--graphite);
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+.roadmap__item::before {
+  content: "+";
+  color: var(--teal);
+  font-weight: 300;
+  flex-shrink: 0;
+  margin-top: -2px;
+}
+
+@media (max-width: 900px) {
+  .roadmap__timeline { grid-template-columns: 1fr; gap: 3rem; padding-top: 2rem; }
+  .roadmap__spine { display: none; }
+  .roadmap__phase { padding-top: 2rem; }
+  .roadmap__node { top: 0; }
+}
+
+/* ========== COMMERCIAL ========== */
+.commercial {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+.price-card {
+  padding: 3rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.price-card--primary {
+  background: var(--teal-void);
+  color: white;
+}
+.price-card--primary .price-card__label { color: var(--teal-bright); }
+.price-card--primary .price-card__title { color: white; }
+.price-card--primary .price-card__amount { color: var(--teal-bright); }
+.price-card--primary .price-card__unit { color: rgba(255,255,255,0.6); }
+.price-card--primary .price-card__body { color: rgba(255,255,255,0.78); }
+.price-card--primary .price-card__rule { background: rgba(107,165,185,0.4); }
+.price-card__bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  background-image: url('https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1200&q=80&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+}
+.price-card__content { position: relative; z-index: 1; }
+
+.price-card--secondary {
+  border: 1px solid var(--mist);
+  background: var(--paper);
+}
+.price-card__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.price-card--primary .price-card__label::before {
+  content: "+";
+  font-size: 14px;
+}
+.price-card__title {
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.price-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+.price-card__amount {
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 200;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.price-card__unit {
+  font-size: 16px;
+  color: var(--slate);
+  font-weight: 300;
+}
+.price-card__rule {
+  width: 40px;
+  height: 1px;
+  background: var(--teal);
+  margin-bottom: 1.5rem;
+}
+.price-card__body {
+  font-size: 14px;
+  color: var(--slate);
+  line-height: 1.7;
+}
+
+.commercial-notes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--mist);
+}
+.commercial-note__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.commercial-note__body {
+  font-size: 13px;
+  color: var(--slate);
+  line-height: 1.65;
+}
+
+@media (max-width: 800px) {
+  .commercial, .commercial-notes { grid-template-columns: 1fr; }
+  .commercial-notes { gap: 2rem; }
+}
+
+/* ========== NEXT STEPS ========== */
+.next {
+  background: var(--teal-void);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.next__bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=2000&q=80&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.12;
+  filter: grayscale(80%);
+}
+.next__content { position: relative; z-index: 2; }
+.next__steps {
+  display: flex;
+  flex-direction: column;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.next__step {
+  display: grid;
+  grid-template-columns: 60px 1fr 2fr;
+  gap: 2rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  align-items: baseline;
+  transition: padding 400ms var(--ease), background 400ms var(--ease);
+}
+.next__step:last-child { border-bottom: none; }
+.next__step:hover { padding-left: 1rem; padding-right: 1rem; background: rgba(255,255,255,0.03); }
+.next__step__num {
+  font-size: 22px;
+  font-weight: 200;
+  color: var(--teal-bright);
+  letter-spacing: 0.05em;
+}
+.next__step__title {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: white;
+}
+.next__step__desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.65;
+}
+.next__cta {
+  margin-top: 4rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.next__cta-secondary {
+  color: rgba(255,255,255,0.75);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 1rem;
+  transition: color 200ms var(--ease);
+}
+.next__cta-secondary:hover { color: white; }
+
+@media (max-width: 700px) {
+  .next__step { grid-template-columns: 50px 1fr; gap: 1rem; }
+  .next__step__desc { grid-column: 1 / -1; margin-left: 66px; }
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  background: var(--teal-dark);
+  color: rgba(255,255,255,0.8);
+  padding: 4rem 0 2rem;
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.footer__logo {
+  border: 1px solid white;
+  color: white;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  line-height: 1;
+}
+.footer__logo__be { font-size: 18px; font-weight: 300; letter-spacing: 0.15em; display: block; }
+.footer__logo__sub { font-size: 9px; font-weight: 300; letter-spacing: 0.25em; display: block; margin-top: 4px; }
+.footer__label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  color: var(--teal-bright);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.footer__item { font-size: 13px; line-height: 1.9; color: rgba(255,255,255,0.88); }
+.footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 700px) {
+  .footer__grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+/* ========== DATA FLOW ANIMATION (in Maya card) ========== */
+.dataflow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+.dataflow__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal-bright);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); box-shadow: 0 0 12px var(--teal-bright); }
+}
+.dataflow__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--teal-bright), transparent);
+  position: relative;
+  overflow: hidden;
+}
+.dataflow__line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--teal-bright), transparent);
+  animation: flow 2.5s linear infinite;
+}
+@keyframes flow {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* ========== MEDIA QUERIES ========== */
+@media (max-width: 700px) {
+  .section { padding: 5rem 0; }
+  .nav__inner { grid-template-columns: auto auto; justify-content: space-between; }
+  .nav__logo { display: none; }
+  .thesis__outcomes { flex-direction: column; gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav class="nav" id="nav">
+  <div class="container nav__inner">
+    <div class="nav__left">
+      <a href="#top" class="nav__menu">
+        <span class="nav__menu__lines"><span></span><span></span><span></span></span>
+        Menu
+      </a>
+      <div class="nav__divider"></div>
+      <a href="tel:+16493442441" class="nav__phone">+1-649-344-2441</a>
+    </div>
+    <a href="#top" class="nav__logo">
+      <span class="nav__logo__be">BE</span>
+      <span class="nav__logo__sub">INTELIGÊNCIA</span>
+    </a>
+    <div class="nav__right">
+      <a href="#next" class="nav__cta">Sign Off</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="top">
+  <div class="hero__bg"></div>
+  <div class="hero__overlay"></div>
+  <div class="hero__content">
+    <div class="hero__eyebrow eyebrow">A Concept for Beach Enclave · April 2026</div>
+    <div class="hero__wordmark bordered-wordmark">
+      <span class="hero__wordmark__be">BE</span>
+      <span class="hero__wordmark__sub">Inteligência</span>
+    </div>
+    <div class="hero__tagline">Experience the Exceptional, Everywhere</div>
+    <p class="hero__lede">Making Beach Enclave ready for the group era.</p>
+  </div>
+  <a href="#marquee" class="hero__scroll">Scroll</a>
+</section>
+
+<!-- ========== MARQUEE ========== -->
+<div class="marquee" id="marquee">
+  <div class="marquee__track">
+    <span class="marquee__item">Codify</span>
+    <span class="marquee__item">Centralize</span>
+    <span class="marquee__item">Automate</span>
+    <span class="marquee__item">Analyze</span>
+    <span class="marquee__item">Replicate</span>
+    <span class="marquee__item">Elevate</span>
+    <span class="marquee__item">Codify</span>
+    <span class="marquee__item">Centralize</span>
+    <span class="marquee__item">Automate</span>
+    <span class="marquee__item">Analyze</span>
+    <span class="marquee__item">Replicate</span>
+    <span class="marquee__item">Elevate</span>
+  </div>
+</div>
+
+<!-- ========== PROOF ========== -->
+<section class="section">
+  <div class="container">
+    <div class="section__head reveal">
+      <div class="eyebrow">Embrace the Proof</div>
+      <h2 class="h-display">We already have proof</h2>
+    </div>
+    <div class="proof">
+      <div class="proof__maya reveal">
+        <div class="proof__maya__bg"></div>
+        <div class="proof__maya__overlay"></div>
+        <div class="proof__maya__content">
+          <div class="proof__maya__label">An agent named</div>
+          <div class="proof__maya__name">Maya Handfield</div>
+          <p class="proof__maya__body">
+            Live at ÁMBRA. Ingests invoices from email and sales reports from POS. Posts to ledger. Runs every morning. Zero human error. March and April data already flowing.
+          </p>
+          <div class="proof__maya__dataflow">
+            <div class="dataflow">
+              <span class="dataflow__dot"></span>
+              <span>Gmail</span>
+              <span class="dataflow__line"></span>
+              <span>Supabase</span>
+              <span class="dataflow__line"></span>
+              <span>Ledger</span>
+              <span class="dataflow__dot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="proof__quote reveal reveal--delay-2">
+        <div class="proof__quote__label">Vasco, on seeing it</div>
+        <div class="proof__quote__mark">&ldquo;</div>
+        <div class="proof__quote__text">Love it. I wish my team was all in on this stuff.</div>
+        <div class="proof__quote__attr">Vasco Borges · 10 April 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== THESIS ========== -->
+<section class="thesis">
+  <div class="thesis__bg"></div>
+  <div class="thesis__content">
+    <div class="container">
+      <div class="thesis__kicker reveal">The Thesis</div>
+      <h2 class="thesis__statement reveal reveal--delay-1">
+        One hotel runs on heroes.<br />
+        <em>A group runs on playbooks.</em>
+      </h2>
+      <p class="thesis__para reveal reveal--delay-3">
+        Beach Enclave is headed toward group operations. Resort groups scale on systems, not only on people. Today, BE's operational knowledge — the standards of service, the supplier relationships, the pricing instincts, the brand voice — lives inside individuals. When those people move on, it goes with them.
+      </p>
+      <div class="thesis__outcomes reveal reveal--delay-4">
+        <span class="thesis__outcome"><span class="thesis__outcome__dot"></span>Written standards</span>
+        <span class="thesis__outcome"><span class="thesis__outcome__dot"></span>Shared knowledge</span>
+        <span class="thesis__outcome"><span class="thesis__outcome__dot"></span>Clear signals</span>
+        <span class="thesis__outcome"><span class="thesis__outcome__dot"></span>A brand that travels</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== VISION ========== -->
+<section class="section">
+  <div class="container">
+    <div class="vision">
+      <div class="vision__left reveal">
+        <div class="eyebrow" style="margin-bottom: 1.5rem;">The Vision</div>
+        <h2 class="h-display">An AI-first operating layer for Beach Enclave</h2>
+        <span class="thin-rule"></span>
+        <p class="vision__para">
+          BE Inteligência is not a product. It is an operational layer that sits across the group — codifying how BE runs, so every property, every department, every new hire inherits the same playbook. And then using AI to turn that playbook into action.
+        </p>
+        <div class="vision__brief">
+          <div class="vision__brief__label">Direct from your brief</div>
+          <p class="vision__brief__text">
+            Sales &amp; marketing. CRM. Shopping the comp set. Repeat-guest recognition. Automated responses. Contracts.
+          </p>
+        </div>
+      </div>
+      <div class="vision__outcomes">
+        <div class="vision__outcome reveal reveal--delay-1">
+          <div class="vision__outcome__num">01</div>
+          <div>
+            <h3 class="vision__outcome__title">Codify operations</h3>
+            <p class="vision__outcome__desc">Turn tacit knowledge into cross-referenced SOPs that survive turnover.</p>
+          </div>
+        </div>
+        <div class="vision__outcome reveal reveal--delay-2">
+          <div class="vision__outcome__num">02</div>
+          <div>
+            <h3 class="vision__outcome__title">Surface insight</h3>
+            <p class="vision__outcome__desc">Real-time dashboards replace static reports and manual monthly roll-ups.</p>
+          </div>
+        </div>
+        <div class="vision__outcome reveal reveal--delay-3">
+          <div class="vision__outcome__num">03</div>
+          <div>
+            <h3 class="vision__outcome__title">Elevate the team</h3>
+            <p class="vision__outcome__desc">Managers equipped with AI, not replaced by it — amplified judgment.</p>
+          </div>
+        </div>
+        <div class="vision__outcome reveal reveal--delay-4">
+          <div class="vision__outcome__num">04</div>
+          <div>
+            <h3 class="vision__outcome__title">Accelerate decisions</h3>
+            <p class="vision__outcome__desc">CEO and department heads operate with an AI partner, not an inbox.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ARCHITECTURE ========== -->
+<section class="section section--wash" id="architecture">
+  <div class="container">
+    <div class="section__head reveal">
+      <div class="eyebrow">Architecture</div>
+      <h2 class="h-display">One orchestrator · Three pillars · Many sources</h2>
+    </div>
+    <div class="arch reveal">
+      <div class="arch__diagram">
+        <svg viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg" aria-label="BE Inteligência architecture diagram">
+
+          <!-- ========== LEADERSHIP ========== -->
+          <g class="arch__node arch__node--1">
+            <rect x="300" y="20" width="400" height="100" fill="white" stroke="#4A7E92" stroke-width="1.5"/>
+
+            <!-- Crown icon -->
+            <g transform="translate(330, 50)" fill="none" stroke="#4A7E92" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M4 22 L7 8 L12 16 L16 6 L20 16 L25 8 L28 22 Z"/>
+              <line x1="2" y1="26" x2="30" y2="26" stroke-width="2"/>
+              <circle cx="7" cy="8" r="1.4" fill="#4A7E92" stroke="none"/>
+              <circle cx="16" cy="6" r="1.4" fill="#4A7E92" stroke="none"/>
+              <circle cx="25" cy="8" r="1.4" fill="#4A7E92" stroke="none"/>
+            </g>
+
+            <text x="380" y="58" style="letter-spacing:3px" fill="#4A7E92" font-family="Montserrat, sans-serif" font-size="11" font-weight="500">LEADERSHIP</text>
+            <text x="380" y="88" fill="#2B3842" font-family="Montserrat, sans-serif" font-size="13" font-weight="300">Plain-English tasking via WhatsApp &amp; email</text>
+          </g>
+
+          <!-- Connector Leadership → Orchestrator -->
+          <line x1="500" y1="120" x2="500" y2="180" stroke="#4A7E92" stroke-width="1" class="draw-path"/>
+
+          <!-- ========== ORCHESTRATOR ========== -->
+          <g class="arch__node arch__node--2">
+            <rect x="230" y="180" width="540" height="150" fill="#0F2830"/>
+
+            <!-- Network/Hub icon (centered at top) — with animated outer nodes -->
+            <g transform="translate(480, 196)" fill="none" stroke="#6BA5B9" stroke-width="1.5">
+              <!-- Connection lines radiating from center -->
+              <line x1="17" y1="17" x2="9" y2="11" stroke-width="1" opacity="0.55"/>
+              <line x1="23" y1="17" x2="31" y2="11" stroke-width="1" opacity="0.55"/>
+              <line x1="17" y1="23" x2="9" y2="29" stroke-width="1" opacity="0.55"/>
+              <line x1="23" y1="23" x2="31" y2="29" stroke-width="1" opacity="0.55"/>
+              <!-- Central hub (solid) -->
+              <circle cx="20" cy="20" r="5" fill="#6BA5B9"/>
+              <!-- Outer nodes (pulsing in sequence) -->
+              <circle cx="6" cy="8" r="3" fill="#6BA5B9" fill-opacity="0" class="hub-node hub-node--1"/>
+              <circle cx="34" cy="8" r="3" fill="#6BA5B9" fill-opacity="0" class="hub-node hub-node--2"/>
+              <circle cx="34" cy="32" r="3" fill="#6BA5B9" fill-opacity="0" class="hub-node hub-node--3"/>
+              <circle cx="6" cy="32" r="3" fill="#6BA5B9" fill-opacity="0" class="hub-node hub-node--4"/>
+            </g>
+
+            <text x="500" y="270" text-anchor="middle" style="letter-spacing:3px" fill="#6BA5B9" font-family="Montserrat, sans-serif" font-size="11" font-weight="500">CEO ORCHESTRATOR AGENT</text>
+            <text x="500" y="295" text-anchor="middle" fill="white" font-family="Montserrat, sans-serif" font-size="13" font-weight="300">Breaks high-level goals into actionable tasks</text>
+            <text x="500" y="315" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="Montserrat, sans-serif" font-size="12" font-weight="300">Routes to humans and specialist agents</text>
+          </g>
+
+          <!-- Connectors Orchestrator → 3 pillars -->
+          <line x1="500" y1="330" x2="500" y2="380" stroke="#4A7E92" stroke-width="1" class="draw-path"/>
+          <line x1="170" y1="380" x2="830" y2="380" stroke="#4A7E92" stroke-width="1" class="draw-path"/>
+          <line x1="170" y1="380" x2="170" y2="430" stroke="#4A7E92" stroke-width="1" class="draw-path"/>
+          <line x1="500" y1="380" x2="500" y2="430" stroke="#4A7E92" stroke-width="1" class="draw-path"/>
+          <line x1="830" y1="380" x2="830" y2="430" stroke="#4A7E92" stroke-width="1" class="draw-path"/>
+
+          <!-- Junction dots where verticals meet horizontal -->
+          <circle cx="170" cy="380" r="2.5" fill="#4A7E92"/>
+          <circle cx="500" cy="380" r="2.5" fill="#4A7E92"/>
+          <circle cx="830" cy="380" r="2.5" fill="#4A7E92"/>
+
+          <!-- ========== PILLAR 1: Knowledge Base ========== -->
+          <g class="arch__node arch__node--3">
+            <rect x="60" y="430" width="220" height="170" fill="white" stroke="#D1D5DB"/>
+            <rect x="60" y="430" width="3" height="170" fill="#4A7E92"/>
+
+            <!-- Open book icon -->
+            <g transform="translate(150, 448)" fill="none" stroke="#4A7E92" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M4 10 L4 32 L20 28 L36 32 L36 10 L20 14 Z"/>
+              <line x1="20" y1="14" x2="20" y2="28"/>
+              <line x1="8" y1="18" x2="16" y2="20" stroke-width="1"/>
+              <line x1="8" y1="22" x2="16" y2="24" stroke-width="1"/>
+              <line x1="24" y1="20" x2="32" y2="18" stroke-width="1"/>
+              <line x1="24" y1="24" x2="32" y2="22" stroke-width="1"/>
+            </g>
+
+            <text x="170" y="520" text-anchor="middle" style="letter-spacing:3px" fill="#4A7E92" font-family="Montserrat, sans-serif" font-size="10" font-weight="500">KNOWLEDGE BASE</text>
+            <text x="170" y="552" text-anchor="middle" fill="#0F1922" font-family="Montserrat, sans-serif" font-size="12" font-weight="300">SOPs, property details,</text>
+            <text x="170" y="572" text-anchor="middle" fill="#0F1922" font-family="Montserrat, sans-serif" font-size="12" font-weight="300">contacts, brand standards</text>
+          </g>
+
+          <!-- ========== PILLAR 2: Analytics Layer ========== -->
+          <g class="arch__node arch__node--4">
+            <rect x="390" y="430" width="220" height="170" fill="white" stroke="#D1D5DB"/>
+            <rect x="390" y="430" width="3" height="170" fill="#4A7E92"/>
+
+            <!-- Ascending line chart icon -->
+            <g transform="translate(480, 448)" fill="none" stroke="#4A7E92" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M4 34 L4 6"/>
+              <path d="M4 34 L36 34"/>
+              <path d="M8 28 L14 20 L22 24 L32 10"/>
+              <circle cx="8" cy="28" r="1.5" fill="#4A7E92" stroke="none"/>
+              <circle cx="14" cy="20" r="1.5" fill="#4A7E92" stroke="none"/>
+              <circle cx="22" cy="24" r="1.5" fill="#4A7E92" stroke="none"/>
+              <circle cx="32" cy="10" r="2.2" fill="#4A7E92" stroke="none"/>
+            </g>
+
+            <text x="500" y="520" text-anchor="middle" style="letter-spacing:3px" fill="#4A7E92" font-family="Montserrat, sans-serif" font-size="10" font-weight="500">ANALYTICS LAYER</text>
+            <text x="500" y="552" text-anchor="middle" fill="#0F1922" font-family="Montserrat, sans-serif" font-size="12" font-weight="300">Sales, KPIs, F&amp;B cost,</text>
+            <text x="500" y="572" text-anchor="middle" fill="#0F1922" font-family="Montserrat, sans-serif" font-size="12" font-weight="300">finance dashboards</text>
+          </g>
+
+          <!-- ========== PILLAR 3: Task System ========== -->
+          <g class="arch__node arch__node--5">
+            <rect x="720" y="430" width="220" height="170" fill="white" stroke="#D1D5DB"/>
+            <rect x="720" y="430" width="3" height="170" fill="#4A7E92"/>
+
+            <!-- Checklist / clipboard icon -->
+            <g transform="translate(810, 448)" fill="none" stroke="#4A7E92" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+              <rect x="8" y="4" width="24" height="32" rx="1.5"/>
+              <rect x="14" y="2" width="12" height="5" rx="1" fill="#4A7E92" stroke="none"/>
+              <path d="M12 14 L14 16 L18 12"/>
+              <line x1="21" y1="15" x2="29" y2="15" stroke-width="1"/>
+              <path d="M12 22 L14 24 L18 20"/>
+              <line x1="21" y1="23" x2="29" y2="23" stroke-width="1"/>
+              <rect x="12" y="28" width="5" height="5" fill="none" stroke-width="1.2"/>
+              <line x1="21" y1="31" x2="29" y2="31" stroke-width="1"/>
+            </g>
+
+            <text x="830" y="520" text-anchor="middle" style="letter-spacing:3px" fill="#4A7E92" font-family="Montserrat, sans-serif" font-size="10" font-weight="500">TASK SYSTEM</text>
+            <text x="830" y="552" text-anchor="middle" fill="#0F1922" font-family="Montserrat, sans-serif" font-size="12" font-weight="300">Asana — assignment</text>
+            <text x="830" y="572" text-anchor="middle" fill="#0F1922" font-family="Montserrat, sans-serif" font-size="12" font-weight="300">across humans + agents</text>
+          </g>
+        </svg>
+      </div>
+      <div class="arch__data reveal">
+        <span class="arch__data__label">Data sources</span>
+        <span class="arch__data__items">QuickBooks · Silverware POS · Email · OpenTable · Opera PMS · Database · CRM · Excel · TripAdvisor · Google</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PILLARS ========== -->
+<section class="section">
+  <div class="container">
+    <div class="section__head reveal">
+      <div class="eyebrow">The Pilot</div>
+      <h2 class="h-display">Four pillars for the first six months</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal--delay-1">
+        <div class="pillar__header">
+          <div class="pillar__num">01</div>
+          <svg class="pillar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25">
+            <path d="M4 4 L4 20 L12 17 L20 20 L20 4 L12 7 L4 4 M12 7 L12 17"/>
+          </svg>
+        </div>
+        <h3 class="pillar__title">SOPs &amp; Knowledge Base</h3>
+        <p class="pillar__desc">A cohesive, cross-referenced library of standard operating procedures spanning every department. AI drafts and structures; humans validate. The knowledge no longer lives in anyone's head.</p>
+      </div>
+      <div class="pillar reveal reveal--delay-2">
+        <div class="pillar__header">
+          <div class="pillar__num">02</div>
+          <svg class="pillar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25">
+            <path d="M3 20 L3 4 M3 20 L21 20 M7 16 L11 10 L15 13 L21 5"/>
+            <circle cx="21" cy="5" r="1.5"/>
+          </svg>
+        </div>
+        <h3 class="pillar__title">Data &amp; Analytics</h3>
+        <p class="pillar__desc">Sales, KPIs, and cost dashboards modeled on the Maya approach. Clean data, automated ingestion, live visibility. Surfaces the metrics that matter per department.</p>
+      </div>
+      <div class="pillar reveal reveal--delay-3">
+        <div class="pillar__header">
+          <div class="pillar__num">03</div>
+          <svg class="pillar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25">
+            <circle cx="9" cy="8" r="3"/>
+            <path d="M3 20 C3 16 5 14 9 14 C13 14 15 16 15 20"/>
+            <path d="M15 5 L21 5 L21 13 M15 9 L19 9"/>
+          </svg>
+        </div>
+        <h3 class="pillar__title">Management AI Training</h3>
+        <p class="pillar__desc">Hands-on enablement for the management team to use AI tools in daily work — forecasting, analysis, drafting, research. Adoption is the real deliverable here.</p>
+      </div>
+      <div class="pillar reveal reveal--delay-4">
+        <div class="pillar__header">
+          <div class="pillar__num">04</div>
+          <svg class="pillar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25">
+            <rect x="5" y="7" width="14" height="12" rx="2"/>
+            <path d="M9 3 L9 7 M15 3 L15 7 M8 12 L10 12 M14 12 L16 12 M9 16 L15 16"/>
+          </svg>
+        </div>
+        <h3 class="pillar__title">CEO AI Assistant</h3>
+        <p class="pillar__desc">A personal agent for you — connected to email and Asana. Breaks concepts into tasks, tracks completion, drafts comms, and pulls intelligence from the knowledge base on demand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ROADMAP ========== -->
+<section class="section section--wash">
+  <div class="container">
+    <div class="section__head reveal">
+      <div class="eyebrow">Roadmap</div>
+      <h2 class="h-display">Six months to a working foundation</h2>
+    </div>
+    <div class="roadmap" id="roadmap">
+      <div class="roadmap__timeline">
+        <div class="roadmap__spine"></div>
+
+        <div class="roadmap__phase">
+          <div class="roadmap__node roadmap__node--1"></div>
+          <div class="roadmap__range">Months 1–2</div>
+          <div class="roadmap__name">Foundation</div>
+          <div class="roadmap__focus">Discover &amp; structure</div>
+          <ul class="roadmap__items">
+            <li class="roadmap__item">Data audit across properties</li>
+            <li class="roadmap__item">Centralize system access</li>
+            <li class="roadmap__item">Knowledge gathering</li>
+            <li class="roadmap__item">SOP template architecture</li>
+            <li class="roadmap__item">Analytics scoping</li>
+            <li class="roadmap__item">Asana rollout</li>
+          </ul>
+        </div>
+
+        <div class="roadmap__phase">
+          <div class="roadmap__node roadmap__node--2"></div>
+          <div class="roadmap__range">Months 3–4</div>
+          <div class="roadmap__name">Build</div>
+          <div class="roadmap__focus">Codify &amp; deploy</div>
+          <ul class="roadmap__items">
+            <li class="roadmap__item">AI-assisted SOP generation</li>
+            <li class="roadmap__item">Sales &amp; KPI dashboard</li>
+            <li class="roadmap__item">CEO AI assistant live</li>
+            <li class="roadmap__item">Management AI training begins</li>
+            <li class="roadmap__item">Knowledge base v1 searchable</li>
+          </ul>
+        </div>
+
+        <div class="roadmap__phase">
+          <div class="roadmap__node roadmap__node--3"></div>
+          <div class="roadmap__range">Months 5–6</div>
+          <div class="roadmap__name">Refine</div>
+          <div class="roadmap__focus">Measure &amp; plan</div>
+          <ul class="roadmap__items">
+            <li class="roadmap__item">KPI adoption review</li>
+            <li class="roadmap__item">Gap analysis</li>
+            <li class="roadmap__item">SOP library v1 signed off</li>
+            <li class="roadmap__item">Phase 2: specialized agents</li>
+            <li class="roadmap__item">Group-replication playbook</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== COMMERCIAL ========== -->
+<section class="section">
+  <div class="container">
+    <div class="section__head reveal">
+      <div class="eyebrow">Commercial Model</div>
+      <h2 class="h-display">Part-time partnership · Long-term engagement</h2>
+    </div>
+
+    <div class="commercial">
+      <div class="price-card price-card--primary reveal">
+        <div class="price-card__bg"></div>
+        <div class="price-card__content">
+          <div class="price-card__label">Primary</div>
+          <div class="price-card__title">Monthly Retainer</div>
+          <div class="price-card__price">
+            <span class="price-card__amount" data-count="3000" data-prefix="$">$0</span>
+            <span class="price-card__unit">/ month</span>
+          </div>
+          <div class="price-card__rule"></div>
+          <p class="price-card__body">Strategic consulting, architecture, integrations, team training, ongoing maintenance of delivered systems, and unlimited access across the engagement.</p>
+        </div>
+      </div>
+
+      <div class="price-card price-card--secondary reveal reveal--delay-2">
+        <div class="price-card__content">
+          <div class="price-card__label">Secondary</div>
+          <div class="price-card__title">Out-of-Scope Day Rate</div>
+          <div class="price-card__price">
+            <span class="price-card__amount">$250&ndash;$300</span>
+            <span class="price-card__unit">/ day</span>
+          </div>
+          <div class="price-card__rule"></div>
+          <p class="price-card__body">Applied only to defined project work beyond retainer scope — a net-new specialized agent build, a full property SOP rollout. Quoted in advance.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="commercial-notes">
+      <div class="commercial-note reveal reveal--delay-1">
+        <div class="commercial-note__label">Remote-first</div>
+        <p class="commercial-note__body">Flexible delivery; cross-pollination from other TCI operations is a feature.</p>
+      </div>
+      <div class="commercial-note reveal reveal--delay-2">
+        <div class="commercial-note__label">6-month pilot</div>
+        <p class="commercial-note__body">Review at month 6 against roadmap deliverables; extend, adjust, or step back.</p>
+      </div>
+      <div class="commercial-note reveal reveal--delay-3">
+        <div class="commercial-note__label">Maya stays separate</div>
+        <p class="commercial-note__body">ÁMBRA bookkeeping agent continues under LBBC at $300/month. Distinct engagement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== NEXT STEPS ========== -->
+<section class="section next" id="next">
+  <div class="next__bg"></div>
+  <div class="next__content">
+    <div class="container">
+      <div class="section__head reveal">
+        <div class="eyebrow eyebrow--light">Next Steps</div>
+        <h2 class="h-display h-display--light">Kick-off within two weeks</h2>
+      </div>
+      <div class="next__steps">
+        <div class="next__step reveal reveal--delay-1">
+          <div class="next__step__num">01</div>
+          <div class="next__step__title">Your sign-off</div>
+          <div class="next__step__desc">Approve the 6-month pilot scope and commercial model.</div>
+        </div>
+        <div class="next__step reveal reveal--delay-2">
+          <div class="next__step__num">02</div>
+          <div class="next__step__title">Key introductions</div>
+          <div class="next__step__desc">Tanithca, Sophia, the new S&amp;M lead, and HR — the people closest to the operational knowledge we need to codify.</div>
+        </div>
+        <div class="next__step reveal reveal--delay-3">
+          <div class="next__step__num">03</div>
+          <div class="next__step__title">Asana setup</div>
+          <div class="next__step__desc">I'll provision the workspace and onboard you. Your first task lands there from the orchestrator, not from me.</div>
+        </div>
+        <div class="next__step reveal reveal--delay-4">
+          <div class="next__step__num">04</div>
+          <div class="next__step__title">Knowledge-base session</div>
+          <div class="next__step__desc">First working session focused on properties, org, contacts, standards, supplier relationships.</div>
+        </div>
+        <div class="next__step reveal reveal--delay-5">
+          <div class="next__step__num">05</div>
+          <div class="next__step__title">Agreement signed</div>
+          <div class="next__step__desc">Short-form engagement letter. Pilot starts inside two weeks of sign-off.</div>
+        </div>
+      </div>
+      <div class="next__cta reveal">
+        <a href="https://wa.me/16493442441?text=Vasco%2C%20I%27m%20good%20to%20proceed%20with%20BE%20Intelig%C3%AAncia%20%E2%80%94%20let%27s%20kick%20off." class="btn btn--light">
+          <svg class="plus-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1">
+            <circle cx="10" cy="10" r="9"/>
+            <path d="M10 6v8M6 10h8" stroke-width="1"/>
+          </svg>
+          Sign off via WhatsApp
+        </a>
+        <a href="mailto:daniel@hoffmanntci.com?subject=BE%20Inteligência" class="next__cta-secondary">
+          <svg class="plus-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1">
+            <circle cx="10" cy="10" r="9"/>
+            <path d="M10 6v8M6 10h8" stroke-width="1"/>
+          </svg>
+          Email Daniel
+        </a>
+        <a href="deck.pdf" class="next__cta-secondary" download>
+          <svg class="plus-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1">
+            <circle cx="10" cy="10" r="9"/>
+            <path d="M10 6v8M6 10h8" stroke-width="1"/>
+          </svg>
+          Download deck (PDF)
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__logo">
+        <span class="footer__logo__be">BE</span>
+        <span class="footer__logo__sub">INTELIGÊNCIA</span>
+      </div>
+      <div>
+        <div class="footer__label">Contact</div>
+        <div class="footer__item">Daniel Hoffmann</div>
+        <div class="footer__item">daniel@hoffmanntci.com</div>
+        <div class="footer__item">+1 649 344 2441</div>
+      </div>
+      <div>
+        <div class="footer__label">Hoffmann Ltd</div>
+        <div class="footer__item">Providenciales</div>
+        <div class="footer__item">Turks &amp; Caicos Islands</div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div>© 2026 Hoffmann Ltd · A proposal for Beach Enclave · Confidential</div>
+      <div id="updated"></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ========== SCROLL-TRIGGERED REVEAL ==========
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal, .roadmap, .arch').forEach(el => io.observe(el));
+
+// ========== NAV STATE ON SCROLL ==========
+const nav = document.getElementById('nav');
+const onScroll = () => {
+  if (window.scrollY > 80) nav.classList.add('is-scrolled');
+  else nav.classList.remove('is-scrolled');
+};
+window.addEventListener('scroll', onScroll, { passive: true });
+
+// ========== NUMBER COUNTER ==========
+const counters = document.querySelectorAll('[data-count]');
+const counterIO = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const end = parseInt(el.dataset.count, 10);
+    const prefix = el.dataset.prefix || '';
+    const duration = 1800;
+    const start = performance.now();
+    const animate = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(end * eased);
+      el.textContent = prefix + current.toLocaleString();
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+    counterIO.unobserve(el);
+  });
+}, { threshold: 0.5 });
+counters.forEach(el => counterIO.observe(el));
+
+// ========== SUBTLE HERO PARALLAX ==========
+const heroBg = document.querySelector('.hero__bg');
+if (heroBg && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y < window.innerHeight) {
+          heroBg.style.transform = `scale(1.08) translateY(${y * 0.25}px)`;
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+// ========== LAST UPDATED ==========
+const updated = document.getElementById('updated');
+if (updated) {
+  const d = new Date();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  updated.textContent = `Updated ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+</script>
+
+</body>
+</html>
