@@ -506,19 +506,32 @@ a { color: inherit; text-decoration: none; transition: color 200ms var(--ease); 
   position: relative;
   overflow: hidden;
   min-height: 480px;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 60px rgba(74,126,146,0.1);
+  transition: transform 500ms var(--ease), box-shadow 500ms var(--ease);
+}
+
+.proof__maya:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 80px rgba(74,126,146,0.2);
 }
 .proof__maya__bg {
   position: absolute;
   inset: 0;
-  opacity: 0.25;
-  background-image: url('https://images.unsplash.com/photo-1518684079-3c830dcef090?w=1200&q=80&auto=format&fit=crop');
-  background-size: cover;
-  background-position: center;
+  opacity: 0.15;
+  background: radial-gradient(circle at 20% 80%, var(--teal-bright) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, var(--teal-deep) 0%, transparent 50%),
+              linear-gradient(45deg, var(--teal-void) 25%, transparent 25%),
+              linear-gradient(-45deg, var(--teal-void) 25%, transparent 25%),
+              linear-gradient(45deg, transparent 75%, var(--teal-void) 75%),
+              linear-gradient(-45deg, transparent 75%, var(--teal-void) 75%);
+  background-size: 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px;
+  background-position: 0 0, 0 0, 0 0, 10px 10px, 0 0, 10px 10px;
 }
 .proof__maya__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--teal-void) 0%, rgba(15,40,48,0.85) 60%, rgba(15,40,48,0.4) 100%);
+  background: linear-gradient(135deg, var(--teal-void) 0%, rgba(15,40,48,0.9) 50%, rgba(15,40,48,0.3) 100%);
 }
 .proof__maya__content {
   position: relative;
@@ -536,12 +549,25 @@ a { color: inherit; text-decoration: none; transition: color 200ms var(--ease); 
   margin-bottom: 1rem;
 }
 .proof__maya__name {
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 300;
-  letter-spacing: 0.05em;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   line-height: 1.1;
-  margin-bottom: 2rem;
+  color: var(--ivory);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.proof__maya__name::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal-bright), transparent);
 }
 .proof__maya__body {
   font-size: 15px;
@@ -552,6 +578,24 @@ a { color: inherit; text-decoration: none; transition: color 200ms var(--ease); 
 .proof__maya__dataflow {
   margin-top: auto;
   padding-top: 2.5rem;
+}
+
+.proof__maya__portrait {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 1rem auto;
+  display: block;
+  border: 3px solid var(--teal-bright);
+  box-shadow: 0 0 20px rgba(107, 165, 185, 0.3), 0 8px 16px rgba(0,0,0,0.2);
+  transition: transform 300ms var(--ease), box-shadow 300ms var(--ease);
+  position: relative;
+}
+
+.proof__maya__portrait:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(107, 165, 185, 0.5), 0 12px 24px rgba(0,0,0,0.3);
 }
 
 .proof__quote {
@@ -1396,8 +1440,9 @@ a { color: inherit; text-decoration: none; transition: color 200ms var(--ease); 
         <div class="proof__maya__content">
           <div class="proof__maya__label">An agent named</div>
           <div class="proof__maya__name">Maya Handfield</div>
+          <img src="public/maya.png" alt="Portrait of Maya Handfield" class="proof__maya__portrait">
           <p class="proof__maya__body">
-            Live at ÁMBRA. Ingests invoices from email and sales reports from POS. Posts to ledger. Runs every morning. Zero human error. March and April data already flowing.
+            Live at ÁMBRA. Ingests invoices from email and sales reports from POS. Posts to ledger in Supabase, also feeds data to dashboard and presents charts and KPIs in a slick way. Runs every morning. Zero human error. Never gets tired. March and April data already flowing.
           </p>
           <div class="proof__maya__dataflow">
             <div class="dataflow">
