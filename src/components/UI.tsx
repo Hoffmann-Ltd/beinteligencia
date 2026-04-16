@@ -1,27 +1,39 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { ReactNode, useRef } from 'react'
+import { useEffect, useRef, useState, ReactNode } from 'react'
 
-export { motion, useScroll, useTransform }
+export { useRef }
 
-const easing: [number, number, number, number] = [0.16, 1, 0.3, 1]
-
+/* ---------- ONE-TIME INTERSECTION REVEAL (matches original) ---------- */
 export function Reveal({ children, delay = 0, className = '' }: {
   children: ReactNode; delay?: number; className?: string
 }) {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.9', 'end 0.15'] })
-  const y = useTransform(scrollYProgress, [0, 1], [30, 0])
-  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1])
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.unobserve(el) } },
+      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <motion.div ref={ref} style={{ y, opacity }} transition={{ duration: 0.9, ease: easing, delay }} className={className}>
+    <div
+      ref={ref}
+      className={`reveal ${visible ? 'is-visible' : ''} ${className}`}
+      style={delay ? { transitionDelay: `${delay * 1000}ms` } : undefined}
+    >
       {children}
-    </motion.div>
+    </div>
   )
 }
 
+/* ---------- REUSABLE UI PRIMITIVES ---------- */
 export function Eyebrow({ children, light = false, className = '' }: { children: ReactNode; light?: boolean; className?: string }) {
   return (
     <span className={`eyebrow ${light ? 'eyebrow--light' : ''} ${className}`}>
@@ -52,7 +64,7 @@ export function DataFlow({ items }: { items: string[] }) {
     <div className="dataflow">
       <span className="dataflow__dot"></span>
       {items.map((item, i) => (
-        <span key={i} className="flex items-center gap-4">
+        <span key={i} className="dataflow__segment">
           <span>{item}</span>
           {i < items.length - 1 && <span className="dataflow__line"></span>}
         </span>

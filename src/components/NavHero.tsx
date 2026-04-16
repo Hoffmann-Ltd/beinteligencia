@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Eyebrow } from './UI'
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
@@ -15,10 +14,10 @@ export default function Nav() {
     <nav id="nav" className={`nav ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="container nav__inner">
         <div className="nav__left">
-          <span className="nav__menu">
+          <a href="#top" className="nav__menu">
             <span className="nav__menu__lines"><span></span><span></span><span></span></span>
             Menu
-          </span>
+          </a>
           <div className="nav__divider"></div>
           <a href="tel:+16493442441" className="nav__phone">+1-649-344-2441</a>
         </div>
@@ -35,6 +34,27 @@ export default function Nav() {
 }
 
 export function Hero() {
+  useEffect(() => {
+    const heroBg = document.querySelector('.hero__bg') as HTMLElement | null
+    if (!heroBg) return
+    if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return
+
+    let ticking = false
+    const handleScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        const y = window.scrollY
+        if (y < window.innerHeight) {
+          heroBg.style.transform = `scale(1.08) translateY(${y * 0.25}px)`
+        }
+        ticking = false
+      })
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
     <section id="top" className="hero">
       <div className="hero__bg"></div>

@@ -6,12 +6,14 @@ export default function Proof() {
   return (
     <section className="section">
       <div className="container">
-        <div className="section__head reveal">
-          <Eyebrow>Embrace the Proof</Eyebrow>
-          <HDisplay>We already have proof</HDisplay>
-        </div>
+        <Reveal>
+          <div className="section__head">
+            <Eyebrow>Embrace the Proof</Eyebrow>
+            <HDisplay>We already have proof</HDisplay>
+          </div>
+        </Reveal>
         <div className="proof">
-          <div className="proof__maya reveal">
+          <Reveal className="proof__maya">
             <div className="proof__maya__bg"></div>
             <div className="proof__maya__overlay"></div>
             <div className="proof__maya__content">
@@ -24,13 +26,13 @@ export default function Proof() {
                 <DataFlow items={['Gmail', 'Supabase', 'Ledger']} />
               </div>
             </div>
-          </div>
-          <div className="proof__quote reveal reveal--delay-2">
+          </Reveal>
+          <Reveal delay={0.3} className="proof__quote">
             <div className="proof__quote__label">Vasco, on seeing it</div>
             <div className="proof__quote__mark">&ldquo;</div>
             <div className="proof__quote__text">Love it. I wish my team was all in on this stuff.</div>
             <div className="proof__quote__attr">Vasco Borges · 10 April 2026</div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
