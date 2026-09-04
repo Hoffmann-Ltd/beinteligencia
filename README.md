@@ -1,3 +1,6 @@
+> **Retired.** This pitch is no longer active and the repository is archived (read-only).
+> Kept for reference. The Render deployment may still answer until the service is removed there.
+
 # BE Inteligência
 
 Static landing page for **BE Inteligência** — a concept pitch to Beach Enclave for an
